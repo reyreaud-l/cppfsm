@@ -12,20 +12,22 @@ namespace fsm
   //Unique ids for all elements
   int fresh_id();
   //Default exit function for a State
-  void exit();
+  void default_fun();
   //Declare type for state function
   typedef void (*Fun)();
 
   class State
   {
     public:
-      State(Fun, std::string = "");
+      State(Fun = fsm::default_fun, std::string = "");
 
       void entry();
       void exit();
 
       bool operator==(State&);
       bool operator==(const State&) const;
+      bool operator!=(State&);
+      bool operator!=(const State&) const;
 
       void exit_func_set(Fun);
 
@@ -33,8 +35,8 @@ namespace fsm
       int id_get();
     protected:
       int id_;
-      Fun state_func_;
-      Fun exit_func_ = fsm::exit;
+      Fun state_func_ = fsm::default_fun;
+      Fun exit_func_ = fsm::default_fun;
       std::string name_;
   };
 
@@ -46,12 +48,16 @@ namespace fsm
       bool operator==(Transition&);
       bool operator==(const Transition&) const;
 
+      std::shared_ptr<State> to_get();
+      const std::shared_ptr<State> to_get() const;
+      std::shared_ptr<State> from_get();
+      const std::shared_ptr<State> from_get() const;
       std::string name_get();
       int id_get();
     protected:
       int id_;
-      State from_;
-      State to_;
+      std::shared_ptr<State> from_;
+      std::shared_ptr<State> to_;
       std::string name_;
   };
 
@@ -63,6 +69,8 @@ namespace fsm
       void start();
       void transit(const Transition&);
       void transit(int);
+
+      void transit_check(Transition&);
 
       void add_states(State&);
       void add_transitions(Transition&);

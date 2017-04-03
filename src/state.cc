@@ -34,6 +34,16 @@ namespace fsm
     return id_ == other.id_;
   }
 
+  bool State::operator!=(State& other)
+  {
+    return id_ != other.id_;
+  }
+
+  bool State::operator!=(const State& other) const
+  {
+    return id_ != other.id_;
+  }
+
   std::string State::name_get()
   {
     return name_;

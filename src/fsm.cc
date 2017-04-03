@@ -26,14 +26,21 @@ namespace fsm
           return *i.get() == transit;
         });
     if (res == transitions_.end())
-    {
       error("Transition not found");
-    }
     else
+      transit_check(**res);
+  }
+
+  void Fsm::transit_check(Transition& transit)
+  {
+    if (*transit.from_get() != *current_state_)
     {
-      std::cout << "Found transition\n";
-      // Check transition is ok, then proceed
+      error("Invalid start state for transition");
+      return;
     }
+    current_state_->exit();
+    current_state_ = transit.to_get();
+    current_state_->entry();
   }
 
   void Fsm::transit(int t)
@@ -80,6 +87,6 @@ namespace fsm
     return counter_;
   }
 
-  void exit()
+  void default_fun()
   {}
 }

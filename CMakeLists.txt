@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -std=c++14 -pedantic -g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
