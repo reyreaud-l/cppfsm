@@ -5,6 +5,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 set(SRC_LIB
   src/fsm.cc
+  src/transition.cc
+  src/state.cc
 )
 
 set(SRC_INCLUDE
@@ -24,4 +26,11 @@ add_executable(
 
 target_link_libraries(
   testme cppfsm
+)
+
+add_custom_target(
+  check
+  DEPENDS testme
+  COMMAND ./testme
+  COMMAND rm -f testme
 )
