@@ -20,6 +20,7 @@ namespace fsm
   {
     public:
       State(Fun = fsm::default_fun, std::string = "");
+      virtual ~State() {}
 
       void entry();
       void exit();
@@ -44,6 +45,7 @@ namespace fsm
   {
     public:
       Transition(State, State, std::string = "");
+      virtual ~Transition() {}
 
       bool operator==(Transition&);
       bool operator==(const Transition&) const;
@@ -65,13 +67,12 @@ namespace fsm
   {
     public:
       Fsm(std::string name = "");
+      virtual ~Fsm() {}
       
       void start();
       void transit(const Transition&);
       void transit(const State&);
       void transit(int);
-
-      void transit_check(Transition&);
 
       void add_states(State&);
       void add_transitions(Transition&);
@@ -81,7 +82,9 @@ namespace fsm
       int id_get();
 
     protected:
+      void transit_check(Transition&);
       void error(std::string);
+
       int id_;
       std::string name_;
       std::shared_ptr<State> current_state_ = nullptr;

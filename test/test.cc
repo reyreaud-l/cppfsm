@@ -1,4 +1,6 @@
 #include "fsm.hh"
+#include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include <iostream>
 
 void statefunction1()
