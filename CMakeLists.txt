@@ -3,7 +3,7 @@ set(PROJECT_NAME_STR cppfsm)
 project(${PROJECT_NAME_STR} CXX)
 
 #CXX FLAGS
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -std=c++11 -pedantic -g")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -std=c++11 -pedantic -g -pthread")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 
@@ -24,6 +24,7 @@ add_subdirectory(${EXT_PROJECTS_DIR}/gtest)
 
 #TESTS
 enable_testing()
+find_package(Threads REQUIRED)
 set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
 include_directories(${GTEST_INCLUDE_DIRS}
   ${GMOCK_INCLUDE_DIRS}
@@ -34,7 +35,6 @@ file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cc)
 add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES})
 add_dependencies(${PROJECT_TEST_NAME} googletest)
 
-#LINK AND CUSTOM
 target_link_libraries(${PROJECT_TEST_NAME} ${PROJECT_LIB_NAME})
 target_link_libraries(${PROJECT_TEST_NAME}
   ${GTEST_LIBS_DIR}/libgtest.a

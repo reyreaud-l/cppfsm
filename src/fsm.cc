@@ -104,4 +104,9 @@ namespace fsm
   {
     return name_;
   }
+
+  int Fsm::id_get()
+  {
+    return id_;
+  }
 }
