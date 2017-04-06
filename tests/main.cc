@@ -27,9 +27,11 @@ int main()
   my_machine.add_states(state_1);
   my_machine.add_states(state_2);
   my_machine.add_transitions(transit_1);
+  my_machine.add_transitions(transit_2);
   state_1.exit_func_set(statefunction1_exit);
   my_machine.set_start_state(state_1);
   my_machine.start();
   my_machine.transit(transit_1);
   my_machine.transit(transit_2);
+  my_machine.transit(state_2);
 }

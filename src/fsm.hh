@@ -68,6 +68,7 @@ namespace fsm
       
       void start();
       void transit(const Transition&);
+      void transit(const State&);
       void transit(int);
 
       void transit_check(Transition&);

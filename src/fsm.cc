@@ -31,6 +31,36 @@ namespace fsm
       transit_check(**res);
   }
 
+  void Fsm::transit(const State& state)
+  {
+    auto res = std::find_if(
+        transitions_.begin(), transitions_.end(),
+        [state, this](const std::shared_ptr<Transition>& i)
+        {
+          return *(i.get()->from_get())
+            == *(this->current_state_)
+            && *(i.get()->to_get()) == state;
+        });
+    if (res == transitions_.end())
+      error("Transition not found");
+    else
+      transit_check(**res);
+  }
+
+  void Fsm::transit(int transit)
+  {
+    auto res = std::find_if(
+        transitions_.begin(), transitions_.end(),
+        [transit](const std::shared_ptr<Transition>& i)
+        {
+          return i.get()->id_get() == transit;
+        });
+    if (res == transitions_.end())
+      error("Transition not found");
+    else
+      transit_check(**res);
+  }
+
   void Fsm::transit_check(Transition& transit)
   {
     if (*transit.from_get() != *current_state_)
@@ -41,11 +71,6 @@ namespace fsm
     current_state_->exit();
     current_state_ = transit.to_get();
     current_state_->entry();
-  }
-
-  void Fsm::transit(int t)
-  {
-    (void)t; 
   }
 
   void Fsm::error(std::string err)
