@@ -1,0 +1,8 @@
+Add event handler
+Add variadic to add_states and add_transitions to add one or more
+state or transition to the fsm
+Find a way to let user configure function called on entry and exit
+and configure the way to call them (add parameters, ...)
+Add tests (loads of tests)
+Make an FSM a global thing (or a global list of fsm) responding
+to functions (like start, send_event, ...)
