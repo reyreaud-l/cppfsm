@@ -7,6 +7,7 @@ set(SRC_LIB
   src/fsm.cc
   src/transition.cc
   src/state.cc
+  src/misc.cc
 )
 
 include_directories(src/)
