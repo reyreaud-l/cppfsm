@@ -8,15 +8,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 
 #CPPFSM
-set(PROJECT_LIB_NAME ${PROJECT_NAME_STR}_lib)
-set(COMMON_INCLUDES src/)
-file(GLOB LIB_SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cc)
-add_library(
-  ${PROJECT_LIB_NAME}
-  SHARED
-  ${LIB_SRC_FILES}
-  ${COMMON_INCLUDES}
-)
+set(COMMON_INCLUDES include/)
 
 #GTEST
 set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
@@ -35,7 +27,6 @@ file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cc)
 add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES})
 add_dependencies(${PROJECT_TEST_NAME} googletest)
 
-target_link_libraries(${PROJECT_TEST_NAME} ${PROJECT_LIB_NAME})
 target_link_libraries(${PROJECT_TEST_NAME}
   ${GTEST_LIBS_DIR}/libgtest.a
   ${GTEST_LIBS_DIR}/libgtest_main.a
