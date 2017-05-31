@@ -1,13 +1,20 @@
-#include <cppfsm.hh>
-#include "testmachine.hh"
-#include "gtest/gtest.h"
-#include "gmock/gmock.h"
+#define CATCH_CONFIG_MAIN //Catch provide a main
+#define __TEST_CPPFSM 
+#include "catch.hpp"
+#include "test.hh"
 #include <iostream>
 
+//Initialsing our test machine
 CPPFSM_INIT_STATE(TestMachine, State_1);
 
-int main(void)
+TEST_CASE("Start")
 {
+  CPPFSM_FORCE_STATE(TestMachine, State_1);
   TestMachine::start();
-  TestMachine::event();
+  
+  SECTION("Checking event handling") {
+    REQUIRE(TestMachine::assert_state<State_1>());
+    TestMachine::event();
+    REQUIRE(TestMachine::assert_state<State_2>());
+  }
 }

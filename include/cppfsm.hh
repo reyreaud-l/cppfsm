@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 namespace cppfsm
 {
   template <typename F, typename S>
@@ -43,6 +45,14 @@ namespace cppfsm
       }
 
       static state_ptr state_current;
+
+#ifdef __TEST_CPPFSM
+      template <typename S>
+      static bool assert_state(void)
+      {
+        return typeid(*state_current) == typeid(S);
+      }
+#endif
   };
 
 
@@ -51,4 +61,9 @@ namespace cppfsm
   template <> \
   cppfsm::Cppfsm<_MACHINE>::state_ptr cppfsm::Cppfsm<_MACHINE>::state_current = \
     cppfsm::Cppfsm<_MACHINE>::get_state_ptr<_STATE>()
+
+#ifdef __TEST_CPPFSM
+#define CPPFSM_FORCE_STATE(_MACHINE, _STATE) \
+  cppfsm::Cppfsm<_MACHINE>::state_current = cppfsm::Cppfsm<_MACHINE>::get_state_ptr<_STATE>()
+#endif
 }
