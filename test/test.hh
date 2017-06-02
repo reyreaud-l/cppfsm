@@ -6,7 +6,7 @@ class TestMachine : public cppfsm::Cppfsm<TestMachine>
   void virtual entry(void) { };
   void virtual exit(void) { };
   void virtual react(void) { };
-  void virtual check(void) { };
+  bool virtual check(void) { return true; };
 };
 
 
@@ -26,6 +26,12 @@ class State_1 : public TestMachine
   {
     transit<State_2>();
   }
+
+  bool check(void)
+  {
+    std::cout << "Check called\n";
+    return true;
+  }
 };
 
 class State_2 : public TestMachine
@@ -36,5 +42,11 @@ class State_2 : public TestMachine
 
   void exit(void) override
   {}
+
+  bool check(void)
+  {
+    std::cout << "Check 2 called\n";
+    return true;
+  }
 };
 

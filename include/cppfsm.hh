@@ -19,18 +19,35 @@ namespace cppfsm
   {
     private:
       template<typename T>
-        static constexpr auto check(T*)
-        -> typename std::is_same<
+      static constexpr auto check(T*)
+      -> typename std::is_same<
         decltype(std::declval<T>().check(std::declval<Args>()...)),
         Ret>::type;
 
-      template<typename>
-        static constexpr std::false_type check(...);
+      template<typename T>
+      static constexpr std::false_type check(...);
 
       typedef decltype(check<C>(0)) type;
 
+      static bool eval_inner(C* c, std::true_type)
+      {
+        std::cout << "ok\n";
+        return c->check();
+      }
+
+      static bool eval_inner(C*, std::false_type)
+      {
+        std::cout << "no-op\n";
+        return false;
+      }
+
     public:
-      static constexpr bool value = type::value;
+      static bool eval(C* c)
+      {
+        return eval_inner(c, type());
+      }
+
+      static const bool value = type::value;
   };
 
   //Represent a state value and it's type
@@ -57,16 +74,22 @@ namespace cppfsm
       }
 
       template <typename S>
-        static void transit(void)
+      static void transit(void)
+      {
+        //Check for check method presence and abort if present and
+        //abort if it return false
+        if (has_check<F, bool(void)>::value)
         {
-          if (has_check<F, void(void)>::value)
-            std::cout << "Check is implemented\n";
-          state_current->exit();
-          //Update current state and then call entry
-          state_current = get_state_ptr<S>();
-          state_current->entry();
+          std::cout << "Check detected\n";
+          if (!has_check<F, bool(void)>::eval(state_current))
+            return;
         }
-
+        state_current->exit();
+        //Update current state and then call entry
+        state_current = get_state_ptr<S>();
+        state_current->entry();
+      }
+        
       template <typename S>
         static constexpr state_ptr get_state_ptr(void)
         {
@@ -95,8 +118,7 @@ namespace cppfsm
 #define CPPFSM_INIT_STATE(_MACHINE, _STATE) \
   template <> \
   cppfsm::Cppfsm<_MACHINE>::state_ptr cppfsm::Cppfsm<_MACHINE>::state_current = \
-  cppfsm::Cppfsm<_MACHINE>::get_state_ptr<_STATE>()
-
+  cppfsm::Cppfsm<_MACHINE>::get_state_ptr<_STATE>() 
 #ifdef __TEST_CPPFSM
 #define CPPFSM_FORCE_STATE(_MACHINE, _STATE) \
   cppfsm::Cppfsm<_MACHINE>::state_current = cppfsm::Cppfsm<_MACHINE>::get_state_ptr<_STATE>()

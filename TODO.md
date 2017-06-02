@@ -1,5 +1,5 @@
 # Transition
-* Add transitions check
+* Add transitions check (DONE)
 * Add enabler for die/notdie on invalid transition
 * Add listener design pattern for transitions
 
