@@ -4,7 +4,7 @@
 
 namespace cppfsm
 {
-  //Helper structure to check if a class implement a given method
+  /*Helper structure to check if a class implement a given method
   template<typename, typename T>
   struct has_check
   {
@@ -14,6 +14,11 @@ namespace cppfsm
   };
 
   //Template specialization to check if class implem check
+  //FOR NOW USELESS, BECAUSE CANNOT FUNCTION WILL ALWAYS BE PRESENT
+  //AS IT IS NOT POSSIBLE TO DECLTYPE ON DYNAMIC TYPE, THEREFORE
+  //IT IS NOT POSSIBLE TO CHECK FOR METHOD PRECENSE AT RUNTIME
+  //ON DERIVED CLASS. FOR NOW CHECK IS IMPLEMENTED AS VIRTUAL IN
+  //BASE CLASS.
   template<typename C, typename Ret, typename... Args>
   struct has_check<C, Ret(Args...)>
   {
@@ -48,7 +53,7 @@ namespace cppfsm
       }
 
       static const bool value = type::value;
-  };
+  }; */
 
   //Represent a state value and it's type
   template <typename F, typename S>
@@ -78,12 +83,14 @@ namespace cppfsm
       {
         //Check for check method presence and abort if present and
         //abort if it return false
-        if (has_check<F, bool(void)>::value)
+        /* if (has_check<F, bool(void)>::value)
         {
           std::cout << "Check detected\n";
           if (!has_check<F, bool(void)>::eval(state_current))
             return;
-        }
+        } */
+        if (!state_current->check())
+          return;
         state_current->exit();
         //Update current state and then call entry
         state_current = get_state_ptr<S>();
