@@ -5,16 +5,34 @@
 #include <iostream>
 
 //Initialsing our test machine
-CPPFSM_INIT_STATE(TestMachine, State_1);
+CPPFSM_INIT_STATE(TestMachine, Init);
 
 TEST_CASE("Start")
 {
-  CPPFSM_FORCE_STATE(TestMachine, State_1);
+  CPPFSM_FORCE_STATE(TestMachine, Init);
   TestMachine::start();
   
-  SECTION("Checking event handling") {
-    REQUIRE(TestMachine::assert_state<State_1>());
+  SECTION("Checking event handling")
+  {
+    REQUIRE(TestMachine::assert_state<Init>());
     TestMachine::event();
-    REQUIRE(TestMachine::assert_state<State_2>());
+    REQUIRE(TestMachine::assert_state<Middle>());
+  }
+}
+
+TEST_CASE("Transitions & Check")
+{
+  CPPFSM_FORCE_STATE(TestMachine, Init);
+  TestMachine::start();
+
+  SECTION("Checking transition check")
+  {
+    REQUIRE(TestMachine::assert_state<Init>());
+    TestMachine::event();
+    REQUIRE(TestMachine::assert_state<Middle>());
+    TestMachine::event();
+    REQUIRE(TestMachine::assert_state<DeadEnd>());
+    TestMachine::event();
+    REQUIRE(TestMachine::assert_state<DeadEnd>());
   }
 }

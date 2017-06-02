@@ -11,9 +11,11 @@ class TestMachine : public cppfsm::Cppfsm<TestMachine>
 
 
 //TMP
-class State_2;
+class Init;
+class Middle;
+class DeadEnd;
 
-class State_1 : public TestMachine
+class Init : public TestMachine
 {
   public:
   void entry(void) override
@@ -24,17 +26,26 @@ class State_1 : public TestMachine
 
   void react(void) override
   {
-    transit<State_2>();
-  }
-
-  bool check(void)
-  {
-    std::cout << "Check called\n";
-    return true;
+    transit<Middle>();
   }
 };
 
-class State_2 : public TestMachine
+class Middle : public TestMachine
+{
+  public:
+  void entry(void) override
+  {}
+
+  void exit(void) override
+  {}
+
+  void react(void) override
+  {
+    transit<DeadEnd>();
+  }
+};
+
+class DeadEnd : public TestMachine
 {
   public:
   void entry(void) override
@@ -45,8 +56,6 @@ class State_2 : public TestMachine
 
   bool check(void)
   {
-    std::cout << "Check 2 called\n";
-    return true;
+    return false;
   }
 };
-
