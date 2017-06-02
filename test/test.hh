@@ -6,6 +6,7 @@ class TestMachine : public cppfsm::Cppfsm<TestMachine>
   void virtual entry(void) { };
   void virtual exit(void) { };
   void virtual react(void) { };
+  void virtual check(void) { };
 };
 
 
