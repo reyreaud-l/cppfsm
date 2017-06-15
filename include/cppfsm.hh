@@ -35,6 +35,26 @@ namespace cppfsm
         state_current = get_state_ptr<S>();
         state_current->entry();
       }
+
+      template <typename S, typename check_func>
+      static void transit(check_func checker)
+      {
+        //Check for function and return type is bool
+        static_assert(!std::is_function<check_func>::value,
+            "CPPFSM: Transit arg 1 is not a function");
+        static_assert(std::is_same<typename std::result_of<check_func()>::type,
+            bool>::value,
+            "CPPFSM: Transit function check does not return bool");
+        
+        //Call checker function and proceed if true
+        if (checker())
+        {
+          state_current->exit();
+          //Update current state and then call entry
+          state_current = get_state_ptr<S>();
+          state_current->entry();
+        }
+      }
         
       template <typename S>
         static constexpr state_ptr get_state_ptr(void)

@@ -45,6 +45,32 @@ class Middle : public TestMachine
   }
 };
 
+class CheckTrue : public TestMachine
+{
+  public:
+    void react(void) override
+    {
+      auto checker = []()
+      {
+        return true;
+      };
+      transit<DeadEnd>(checker);
+    }
+};
+
+class CheckFalse : public TestMachine
+{
+  public:
+    void react(void) override
+    {
+      auto checker = []()
+      {
+        return false;
+      };
+      transit<DeadEnd>(checker);
+    }
+};
+
 class DeadEnd : public TestMachine
 {
   public:
