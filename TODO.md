@@ -13,3 +13,6 @@
 # Pretty Printer
 * Pretty print transition graph at the end of execution
 * Add enaber for pretty printing
+
+#CppFSM
+* Update wiki
