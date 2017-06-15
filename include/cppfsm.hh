@@ -42,32 +42,33 @@ namespace cppfsm
       state_current->entry();
     }
 
-    template <typename S, typename check_func>
-    static void transit(check_func checker)
+    template <typename S, typename func>
+    static typename std::enable_if<
+      std::is_convertible<func, bool(*)()>::value, void>::type
+    transit(func callee)
     {
-      //Check for function and return type is bool
-      static_assert(!std::is_function<check_func>::value,
-          "Transit arg 1 is not a function");
-      static_assert(std::is_same<typename std::result_of<check_func()>::type,
-          bool>::value,
-          "Transit arg 1 does not return bool");
-      
       //Call checker function and proceed if true
-      if (checker())
+      if (callee())
       {
-        state_current->exit();
-        //Update current state and then call entry
-        state_current = get_state_ptr<S>();
-        state_current->entry();
+        transit<S>();
       }
-      //if strict is enabled, throw and report
       else if (strict == strictness::strict)
       {
         //May need to change logic_error for something more explicit
         throw new std::logic_error("Invalid transition and strict enabled");
       }
     }
-      
+
+    template <typename S, typename func>
+    static typename std::enable_if<
+      std::is_convertible<func, void(*)()>::value, void>::type
+    transit(func callee)
+    {
+      //Call checker function and proceed if true
+      callee();
+      transit<S>();
+    }
+
     template <typename S>
     static constexpr state_ptr get_state_ptr(void)
     {

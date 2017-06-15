@@ -88,6 +88,19 @@ class CheckFalse : public TestMachine
     }
 };
 
+class CallFunc : public TestMachine
+{
+  public:
+    void react(void) override
+    {
+      auto checker = []()
+      {
+        (void)19;
+      };
+      transit<DeadEnd>(checker);
+    }
+};
+
 class Payload : public TestMachine
 {
   public:

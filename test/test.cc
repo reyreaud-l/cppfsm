@@ -50,6 +50,16 @@ TEST_CASE("Transitions false")
   REQUIRE(TestMachine::bool_state<CheckFalse>());
 }
 
+TEST_CASE("Transitions call func")
+{
+  CPPFSM_FORCE_STATE(TestMachine, CallFunc);
+  TestMachine::start();
+  
+  REQUIRE(TestMachine::bool_state<CallFunc>());
+  TestMachine::event();
+  REQUIRE(TestMachine::bool_state<DeadEnd>());
+}
+
 TEST_CASE("Event payload")
 {
   CPPFSM_FORCE_STATE(TestMachine, Payload);

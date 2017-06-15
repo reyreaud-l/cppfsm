@@ -1,5 +1,6 @@
 # Transition
 * Add transitions check (DONE)
+* Add transitions function call (DONE) /* Might need to be reworked */
 * Add enabler for throw on invalid transition (DONE)
 * Add listener design pattern for transitions
 
