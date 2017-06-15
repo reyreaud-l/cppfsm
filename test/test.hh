@@ -6,6 +6,7 @@ class TestMachine : public cppfsm::Cppfsm<TestMachine>
   void virtual entry(void) { };
   void virtual exit(void) { };
   void virtual react(void) { };
+  void virtual react(int) { };
   bool virtual check(void) { return true; };
 };
 
@@ -14,6 +15,7 @@ class TestMachine : public cppfsm::Cppfsm<TestMachine>
 class Init;
 class Middle;
 class DeadEnd;
+class Payload;
 
 class Init : public TestMachine
 {
@@ -45,6 +47,21 @@ class Middle : public TestMachine
   }
 };
 
+class DeadEnd : public TestMachine
+{
+  public:
+  void entry(void) override
+  {}
+
+  void exit(void) override
+  {}
+
+  bool check(void)
+  {
+    return false;
+  }
+};
+
 class CheckTrue : public TestMachine
 {
   public:
@@ -71,17 +88,12 @@ class CheckFalse : public TestMachine
     }
 };
 
-class DeadEnd : public TestMachine
+class Payload : public TestMachine
 {
   public:
-  void entry(void) override
-  {}
-
-  void exit(void) override
-  {}
-
-  bool check(void)
-  {
-    return false;
-  }
+    void react(int payload) override
+    {
+      (void)payload; //avoid warning unused variable
+      transit<DeadEnd>();
+    }
 };

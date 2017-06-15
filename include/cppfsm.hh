@@ -81,6 +81,13 @@ namespace cppfsm
       state_current->react();
     }
 
+    template <typename E>
+    static void event(const E& payload)
+    {
+      //Dispatch event to current state with payload
+      state_current->react(payload);
+    }
+
     static state_ptr state_current;
     static strictness strict;
 

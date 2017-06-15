@@ -49,3 +49,13 @@ TEST_CASE("Transitions false")
   TestMachine::event();
   REQUIRE(TestMachine::bool_state<CheckFalse>());
 }
+
+TEST_CASE("Event payload")
+{
+  CPPFSM_FORCE_STATE(TestMachine, Payload);
+  TestMachine::start();
+  
+  REQUIRE(TestMachine::bool_state<Payload>());
+  TestMachine::event(42);
+  REQUIRE(TestMachine::bool_state<DeadEnd>());
+}
