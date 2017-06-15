@@ -1,6 +1,6 @@
 # Transition
 * Add transitions check (DONE)
-* Add enabler for die/notdie on invalid transition
+* Add enabler for throw on invalid transition (DONE)
 * Add listener design pattern for transitions
 
 # QOL
