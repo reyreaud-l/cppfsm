@@ -5,15 +5,15 @@
 #include <iostream>
 
 //Initialsing our test machine
-CPPFSM_INIT_STATE(TestMachine, Init);
+CPPFSM_INIT(TestMachine, Init, nonstrict);
 
 TEST_CASE("Start")
 {
   CPPFSM_FORCE_STATE(TestMachine, Init);
   TestMachine::start();
-  REQUIRE(TestMachine::assert_state<Init>());
+  REQUIRE(TestMachine::bool_state<Init>());
   TestMachine::event();
-  REQUIRE(TestMachine::assert_state<Middle>());
+  REQUIRE(TestMachine::bool_state<Middle>());
 }
 
 TEST_CASE("Transitions")
@@ -21,13 +21,13 @@ TEST_CASE("Transitions")
   CPPFSM_FORCE_STATE(TestMachine, Init);
   TestMachine::start();
 
-  REQUIRE(TestMachine::assert_state<Init>());
+  REQUIRE(TestMachine::bool_state<Init>());
   TestMachine::event();
-  REQUIRE(TestMachine::assert_state<Middle>());
+  REQUIRE(TestMachine::bool_state<Middle>());
   TestMachine::event();
-  REQUIRE(TestMachine::assert_state<DeadEnd>());
+  REQUIRE(TestMachine::bool_state<DeadEnd>());
   TestMachine::event();
-  REQUIRE(TestMachine::assert_state<DeadEnd>());
+  REQUIRE(TestMachine::bool_state<DeadEnd>());
 }
 
 TEST_CASE("Transitions true")
@@ -35,9 +35,9 @@ TEST_CASE("Transitions true")
   CPPFSM_FORCE_STATE(TestMachine, CheckTrue);
   TestMachine::start();
   
-  REQUIRE(TestMachine::assert_state<CheckTrue>());
+  REQUIRE(TestMachine::bool_state<CheckTrue>());
   TestMachine::event();
-  REQUIRE(TestMachine::assert_state<DeadEnd>());
+  REQUIRE(TestMachine::bool_state<DeadEnd>());
 }
 
 TEST_CASE("Transitions false")
@@ -45,7 +45,7 @@ TEST_CASE("Transitions false")
   CPPFSM_FORCE_STATE(TestMachine, CheckFalse);
   TestMachine::start();
   
-  REQUIRE(TestMachine::assert_state<CheckFalse>());
+  REQUIRE(TestMachine::bool_state<CheckFalse>());
   TestMachine::event();
-  REQUIRE(TestMachine::assert_state<CheckFalse>());
+  REQUIRE(TestMachine::bool_state<CheckFalse>());
 }
