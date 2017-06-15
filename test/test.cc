@@ -11,13 +11,9 @@ TEST_CASE("Start")
 {
   CPPFSM_FORCE_STATE(TestMachine, Init);
   TestMachine::start();
-  
-  SECTION("Checking event handling")
-  {
-    REQUIRE(TestMachine::assert_state<Init>());
-    TestMachine::event();
-    REQUIRE(TestMachine::assert_state<Middle>());
-  }
+  REQUIRE(TestMachine::assert_state<Init>());
+  TestMachine::event();
+  REQUIRE(TestMachine::assert_state<Middle>());
 }
 
 TEST_CASE("Transitions & Check")
@@ -25,14 +21,11 @@ TEST_CASE("Transitions & Check")
   CPPFSM_FORCE_STATE(TestMachine, Init);
   TestMachine::start();
 
-  SECTION("Checking transition check")
-  {
-    REQUIRE(TestMachine::assert_state<Init>());
-    TestMachine::event();
-    REQUIRE(TestMachine::assert_state<Middle>());
-    TestMachine::event();
-    REQUIRE(TestMachine::assert_state<DeadEnd>());
-    TestMachine::event();
-    REQUIRE(TestMachine::assert_state<DeadEnd>());
-  }
+  REQUIRE(TestMachine::assert_state<Init>());
+  TestMachine::event();
+  REQUIRE(TestMachine::assert_state<Middle>());
+  TestMachine::event();
+  REQUIRE(TestMachine::assert_state<DeadEnd>());
+  TestMachine::event();
+  REQUIRE(TestMachine::assert_state<DeadEnd>());
 }
