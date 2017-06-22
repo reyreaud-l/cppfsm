@@ -175,9 +175,12 @@ namespace cppfsm
       state_current_->react(payload);
     }
 
-    static void register_listener(const Listener& listener)
+    /* Might need to switch to unique_ptr, implementation for listener
+     * is a bit messy and should be reworker.
+     * */
+    static void register_listener(std::shared_ptr<Listener> listener)
     {
-      listeners_.push_back(std::unique_ptr<Listener>(listener));
+      listeners_.push_back(listener);
     }
 
     /* These attributes need to be public because of static as they
@@ -185,7 +188,7 @@ namespace cppfsm
      * */
     static state_ptr state_current_;
     static strictness strict_;
-    static std::vector<std::unique_ptr<Listener>> listeners_;
+    static std::vector<std::shared_ptr<Listener>> listeners_;
 
     private:
     static void entry_state(void)
@@ -252,16 +255,16 @@ namespace cppfsm
    * */
 #define CPPFSM_INIT_STATE(_MACHINE, _STATE) \
   template <> \
-  std::vector<std::unique_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
-  = std::vector<std::unique_ptr<cppfsm::Listener>>(); \
+  std::vector<std::shared_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
+  = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
   template <> \
   cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
   cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>() 
 
 #define CPPFSM_INIT_STRICTNESS(_MACHINE, _STRICTNESS) \
   template <> \
-  std::vector<std::unique_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
-  = std::vector<std::unique_ptr<cppfsm::Listener>>(); \
+  std::vector<std::shared_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
+  = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
   template <> \
   cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
   cppfsm::strictness::_STRICTNESS
@@ -269,8 +272,8 @@ namespace cppfsm
   //Combination of both top macros
 #define CPPFSM_INIT(_MACHINE, _STATE, _STRICTNESS) \
   template <> \
-  std::vector<std::unique_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
-   = std::vector<std::unique_ptr<cppfsm::Listener>>(); \
+  std::vector<std::shared_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
+   = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
   template <> \
   cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
   cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>(); \
