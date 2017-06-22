@@ -7,11 +7,6 @@
 
 namespace cppfsm
 {
-  /* This part is class listener that user should inherit to use
-   * listener design pattern with CppFsm. Functions can (and should)
-   * be overriden so that user implements it's own logic/logging
-   * */
-
   /* Message and TransitMessage are classes for communication between
    * machines and listeners. 
    *
@@ -74,6 +69,7 @@ namespace cppfsm
    * */
   class Listener
   {
+    public:
     virtual ~Listener() {};
     virtual void on_transit(const TransitMessage&) = 0;
     virtual void on_entry(const Message&) = 0;
@@ -115,16 +111,18 @@ namespace cppfsm
     public:
     static void start(void)
     {
-      state_current_->entry();
+      entry_state();
     }
 
     template <typename S>
     static void transit(void)
     {
-      state_current_->exit();
+      exit_state();
       //Update current state and then call entry
       state_current_ = get_state_ptr<S>();
-      state_current_->entry();
+      dispatch_transit(TransitMessage(typeid(F).name(), typeid(F).name(),
+            typeid(S).name()));
+      entry_state();
     }
 
     template <typename S, typename func>
@@ -133,7 +131,10 @@ namespace cppfsm
     transit(func callee)
     {
       //Call checker function and proceed if true
-      if (callee())
+      bool call_result = callee();
+      dispatch_check(CheckMessage(typeid(F).name(), typeid(F).name(),
+            typeid(S).name(), call_result));
+      if (call_result)
       {
         transit<S>();
       }
@@ -186,13 +187,24 @@ namespace cppfsm
     static strictness strict_;
     static std::vector<std::unique_ptr<Listener>> listeners_;
 
+    private:
+    static void entry_state(void)
+    {
+      state_current_->entry();
+      dispatch_entry(Message(typeid(F).name()));
+    }
+
+    static void exit_state(void)
+    {
+      state_current_->exit();
+      dispatch_exit(Message(typeid(F).name()));
+    }
     /* This part could be reworked to automatically dispatch
      * on the right function in the listeners.
      *
      * Should remove copy paste of loop and find a way to resolve
      * the right function to call.
      * */
-    private:
     static void dispatch_entry(const Message& msg)
     {
       for (const auto& listener : listeners_)
@@ -240,16 +252,25 @@ namespace cppfsm
    * */
 #define CPPFSM_INIT_STATE(_MACHINE, _STATE) \
   template <> \
+  std::vector<std::unique_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
+  = std::vector<std::unique_ptr<cppfsm::Listener>>(); \
+  template <> \
   cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
   cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>() 
 
 #define CPPFSM_INIT_STRICTNESS(_MACHINE, _STRICTNESS) \
+  template <> \
+  std::vector<std::unique_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
+  = std::vector<std::unique_ptr<cppfsm::Listener>>(); \
   template <> \
   cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
   cppfsm::strictness::_STRICTNESS
   
   //Combination of both top macros
 #define CPPFSM_INIT(_MACHINE, _STATE, _STRICTNESS) \
+  template <> \
+  std::vector<std::unique_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
+   = std::vector<std::unique_ptr<cppfsm::Listener>>(); \
   template <> \
   cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
   cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>(); \

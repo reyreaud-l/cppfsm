@@ -10,7 +10,7 @@ It currently features:
 
 It relies a lot (if not only) on C++11 templates and type traits.
 It does not relies on any outside libraries and does not require particular
-libraries.
+libraries except C++ Standard (use of <memory>, <string>, <stdexcept>).
 
 # Work in progress
 Master branch in considered stable, dev branch is currently work in
