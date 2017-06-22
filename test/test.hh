@@ -1,6 +1,6 @@
 #include <cppfsm.hh>
 
-class TestMachine : public cppfsm::Cppfsm<TestMachine>
+class TestMachine : public cppfsm::Fsm<TestMachine>
 {
   public:
   void virtual entry(void) { };
@@ -95,7 +95,7 @@ class CallFunc : public TestMachine
     {
       auto checker = []()
       {
-        (void)19;
+        return 10;
       };
       transit<DeadEnd>(checker);
     }

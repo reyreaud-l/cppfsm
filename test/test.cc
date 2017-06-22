@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN //Catch provide a main
-#define __TEST_CPPFSM 
+#define CPPFSM_TEST_ENABLE
 #include "catch.hpp"
 #include "test.hh"
 #include <iostream>

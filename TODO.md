@@ -1,11 +1,9 @@
 # Transition
-* Add transitions check (DONE)
-* Add transitions function call (DONE) /* Might need to be reworked */
+* Add transitions function call (DONE)
+    - Check return value when bool is return type
+    - Only call when something else
 * Add enabler for throw on invalid transition (DONE)
 * Add listener design pattern for transitions
-
-# QOL
-* Add optionnal function call on entry / exit
 
 # Event
 * Add templating for event ?
@@ -13,7 +11,7 @@
 
 # Pretty Printer
 * Pretty print transition graph at the end of execution
-* Add enaber for pretty printing
+* Add enabler for pretty printing
 
 #CppFSM
 * Update wiki
