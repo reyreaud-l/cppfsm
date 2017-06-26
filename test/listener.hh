@@ -5,7 +5,7 @@
 //You should not do this using;
 using namespace cppfsm;
 
-class MyListener : public cppfsm::Listener
+class MyListener : public Listener
 {
   public:
     void on_transit(const TransitMessage& m) override

@@ -29,12 +29,11 @@ namespace cppfsm
     std::string state_name_;
   };
 
-  class TransitMessage : public Message
+  class TransitMessage
   {
     public:
-    TransitMessage(std::string name, std::string src, std::string dst)
-      : Message(name)
-      , src_(src)
+    TransitMessage(std::string src, std::string dst)
+      : src_(src)
       , dst_(dst)
     {}
 
@@ -51,8 +50,8 @@ namespace cppfsm
   class CheckMessage : public TransitMessage
   {
     public:
-    CheckMessage(std::string name, std::string src, std::string dst, bool result)
-    : TransitMessage(name, src, dst)
+    CheckMessage(std::string src, std::string dst, bool result)
+    : TransitMessage(src, dst)
     , result_(result)
     {}
 
@@ -120,8 +119,8 @@ namespace cppfsm
       exit_state();
       //Update current state and then call entry
       state_current_ = get_state_ptr<S>();
-      dispatch_transit(TransitMessage(typeid(F).name(), typeid(F).name(),
-            typeid(S).name()));
+      dispatch_transit(TransitMessage(state_current_string_, typeid(S).name()));
+      state_current_string_ = typeid(S).name();
       entry_state();
     }
 
@@ -132,8 +131,7 @@ namespace cppfsm
     {
       //Call checker function and proceed if true
       bool call_result = callee();
-      dispatch_check(CheckMessage(typeid(F).name(), typeid(F).name(),
-            typeid(S).name(), call_result));
+      dispatch_check(CheckMessage(state_current_string_, typeid(S).name(), call_result));
       if (call_result)
       {
         transit<S>();
@@ -187,6 +185,7 @@ namespace cppfsm
      * need to be initialized and are initialized outside of function.
      * */
     static state_ptr state_current_;
+    static std::string state_current_string_;
     static strictness strict_;
     static std::vector<std::shared_ptr<Listener>> listeners_;
 
@@ -202,6 +201,7 @@ namespace cppfsm
       state_current_->exit();
       dispatch_exit(Message(typeid(F).name()));
     }
+
     /* This part could be reworked to automatically dispatch
      * on the right function in the listeners.
      *
@@ -259,7 +259,10 @@ namespace cppfsm
   = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
   template <> \
   cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
-  cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>() 
+  cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>(); \
+  template <> \
+  std::string cppfsm::Fsm<_MACHINE>::state_current_string_ = \
+  typeid(_STATE).name()
 
 #define CPPFSM_INIT_STRICTNESS(_MACHINE, _STRICTNESS) \
   template <> \
@@ -267,7 +270,10 @@ namespace cppfsm
   = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
   template <> \
   cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
-  cppfsm::strictness::_STRICTNESS
+  cppfsm::strictness::_STRICTNESS; \
+  template <> \
+  std::string cppfsm::Fsm<_MACHINE>::state_current_string_ = \
+  typeid(_STATE).name()
   
   //Combination of both top macros
 #define CPPFSM_INIT(_MACHINE, _STATE, _STRICTNESS) \
@@ -279,5 +285,8 @@ namespace cppfsm
   cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>(); \
   template <> \
   cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
-  cppfsm::strictness::_STRICTNESS
+  cppfsm::strictness::_STRICTNESS; \
+  template <> \
+  std::string cppfsm::Fsm<_MACHINE>::state_current_string_ = \
+  typeid(_STATE).name()
 } //namespace cppfsm

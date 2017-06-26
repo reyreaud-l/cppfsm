@@ -3,6 +3,7 @@
 #include "catch.hpp"
 #include "test.hh"
 #include "listener.hh"
+#include "printer.hh"
 #include <iostream>
 
 //Initialsing our test machine
@@ -75,6 +76,22 @@ TEST_CASE("Listener")
 {
   CPPFSM_FORCE_STATE(TestMachine, Init);
   auto listener = std::make_shared<MyListener>();
+  TestMachine::register_listener(listener);
+  TestMachine::start();
+
+  REQUIRE(TestMachine::bool_state<Init>());
+  TestMachine::event();
+  REQUIRE(TestMachine::bool_state<Middle>());
+  TestMachine::event();
+  REQUIRE(TestMachine::bool_state<DeadEnd>());
+  TestMachine::event();
+  REQUIRE(TestMachine::bool_state<DeadEnd>());
+}
+
+TEST_CASE("Flow graph Listener")
+{
+  CPPFSM_FORCE_STATE(TestMachine, Init);
+  auto listener = std::make_shared<FlowPrinter>("flowgraph.gv");
   TestMachine::register_listener(listener);
   TestMachine::start();
 
