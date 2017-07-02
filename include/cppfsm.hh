@@ -177,9 +177,16 @@ namespace cppfsm
     /* Might need to switch to unique_ptr, implementation for listener
      * is a bit messy and should be reworker.
      * */
-    static void register_listener(std::shared_ptr<Listener> listener)
+    static void register_listener(std::shared_ptr<Listener> first)
     {
-      listeners_.push_back(listener);
+      listeners_.emplace_back(first);
+    }
+
+    template <typename... Args>
+    static void register_listener(std::shared_ptr<Listener> first, Args&&... args)
+    {
+      listeners_.emplace_back(first);
+      register_listener(std::forward<Args>(args)...);
     }
 
     /* Clear all existing listeners in the machine

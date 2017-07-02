@@ -94,7 +94,8 @@ TEST_CASE("Flow graph Listener")
 {
   CPPFSM_FORCE_STATE(TestMachine, Init);
   auto listener = std::make_shared<FlowPrinter>("flowgraph.gv");
-  TestMachine::register_listener(listener);
+  auto listener_out = std::make_shared<MyListener>();
+  TestMachine::register_listener(listener, listener_out);
   TestMachine::start();
 
   REQUIRE(TestMachine::bool_state<Init>());
