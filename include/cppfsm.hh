@@ -182,6 +182,13 @@ namespace cppfsm
       listeners_.push_back(listener);
     }
 
+    /* Clear all existing listeners in the machine
+     * */
+    static void clear_listeners()
+    {
+      listeners_.clear();
+    }
+
     /* These attributes need to be public because of static as they
      * need to be initialized and are initialized outside of function.
      * */

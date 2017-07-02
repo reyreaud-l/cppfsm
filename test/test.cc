@@ -86,6 +86,8 @@ TEST_CASE("Listener")
   REQUIRE(TestMachine::bool_state<DeadEnd>());
   TestMachine::event();
   REQUIRE(TestMachine::bool_state<DeadEnd>());
+
+  TestMachine::clear_listeners();
 }
 
 TEST_CASE("Flow graph Listener")
@@ -102,4 +104,6 @@ TEST_CASE("Flow graph Listener")
   REQUIRE(TestMachine::bool_state<DeadEnd>());
   TestMachine::event();
   REQUIRE(TestMachine::bool_state<DeadEnd>());
+
+  TestMachine::clear_listeners();
 }
