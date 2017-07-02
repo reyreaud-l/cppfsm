@@ -131,7 +131,8 @@ namespace cppfsm
     {
       //Call checker function and proceed if true
       bool call_result = callee();
-      dispatch_check(CheckMessage(state_current_string_, typeid(S).name(), call_result));
+      dispatch_check(CheckMessage(state_current_string_,
+            typeid(S).name(), call_result));
       if (call_result)
       {
         transit<S>();
@@ -193,13 +194,13 @@ namespace cppfsm
     static void entry_state(void)
     {
       state_current_->entry();
-      dispatch_entry(Message(typeid(F).name()));
+      dispatch_entry(Message(state_current_string_));
     }
 
     static void exit_state(void)
     {
       state_current_->exit();
-      dispatch_exit(Message(typeid(F).name()));
+      dispatch_exit(Message(state_current_string_));
     }
 
     /* This part could be reworked to automatically dispatch
