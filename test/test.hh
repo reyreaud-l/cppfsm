@@ -56,7 +56,7 @@ class DeadEnd : public TestMachine
   void exit(void) override
   {}
 
-  bool check(void)
+  bool check(void) override
   {
     return false;
   }
