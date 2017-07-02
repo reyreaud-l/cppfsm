@@ -50,8 +50,8 @@ namespace cppfsm
 
     void on_check(const CheckMessage& m) override
     {
+      //Nothing to print on check
       if (!out_file.is_open()) return;
-      out_file << "check\n";
       (void)m;
     }
 

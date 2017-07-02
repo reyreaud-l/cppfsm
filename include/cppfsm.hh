@@ -244,10 +244,12 @@ namespace cppfsm
     template <typename S>
     static bool bool_state(void)
     {
-      return typeid(*state_current_) == typeid(S);
+      return state_current_string_ == typeid(S).name();
     }
 #define CPPFSM_FORCE_STATE(_MACHINE, _STATE) \
-  cppfsm::Fsm<_MACHINE>::state_current_ = cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>()
+  cppfsm::Fsm<_MACHINE>::state_current_ = \
+    cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>(); \
+  cppfsm::Fsm<_MACHINE>::state_current_string_ = typeid(_STATE).name()
 #endif
   };
 
@@ -255,9 +257,17 @@ namespace cppfsm
    * strictness parameter
    * */
 #define CPPFSM_INIT_STATE(_MACHINE, _STATE) \
+  CPPFSM_SET_LISTENERS(_MACHINE); \
+  CPPFSM_SET_STATE(_MACHINE, _STATE) \
+
+#define CPPFSM_INIT(_MACHINE, _STATE, _STRICTNESS) \
+  CPPFSM_SET_LISTENERS(_MACHINE); \
+  CPPFSM_SET_STATE(_MACHINE, _STATE); \
   template <> \
-  std::vector<std::shared_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
-  = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
+  cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
+  cppfsm::strictness::_STRICTNESS \
+
+#define CPPFSM_SET_STATE(_MACHINE, _STATE) \
   template <> \
   cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
   cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>(); \
@@ -265,29 +275,9 @@ namespace cppfsm
   std::string cppfsm::Fsm<_MACHINE>::state_current_string_ = \
   typeid(_STATE).name()
 
-#define CPPFSM_INIT_STRICTNESS(_MACHINE, _STRICTNESS) \
+#define CPPFSM_SET_LISTENERS(_MACHINE) \
   template <> \
   std::vector<std::shared_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
-  = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
-  template <> \
-  cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
-  cppfsm::strictness::_STRICTNESS; \
-  template <> \
-  std::string cppfsm::Fsm<_MACHINE>::state_current_string_ = \
-  typeid(_STATE).name()
-  
-  //Combination of both top macros
-#define CPPFSM_INIT(_MACHINE, _STATE, _STRICTNESS) \
-  template <> \
-  std::vector<std::shared_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
-   = std::vector<std::shared_ptr<cppfsm::Listener>>(); \
-  template <> \
-  cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
-  cppfsm::Fsm<_MACHINE>::get_state_ptr<_STATE>(); \
-  template <> \
-  cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
-  cppfsm::strictness::_STRICTNESS; \
-  template <> \
-  std::string cppfsm::Fsm<_MACHINE>::state_current_string_ = \
-  typeid(_STATE).name()
+  = std::vector<std::shared_ptr<cppfsm::Listener>>() \
+
 } //namespace cppfsm
