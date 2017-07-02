@@ -29,6 +29,8 @@ namespace cppfsm
     std::string state_name_;
   };
 
+  /* Represent a message for a transition.
+   * */
   class TransitMessage
   {
     public:
@@ -47,6 +49,8 @@ namespace cppfsm
     std::string dst_;
   };
 
+  /* Represent a message for a transition with a check function.
+   * */
   class CheckMessage : public TransitMessage
   {
     public:
@@ -81,13 +85,19 @@ namespace cppfsm
    * more in depth explanation on how to use the library.
    * */
 
-  //Represent a state value and it's type
+  /* Represent a state and it's value
+   * */
   template <typename F, typename S>
   struct state_bind
   {
     static S value;
     typedef S value_type;
   };
+
+  /* Shorthand for state_bind value access
+   * */
+  template<typename F, typename S>
+  typename state_bind<F, S>::value_type state_bind<F, S>::value;
 
   /* Represent the strictness of a machine. ie: if it will throw
    * or not on invalid transtion when check function return false
@@ -98,38 +108,44 @@ namespace cppfsm
     strict
   };
 
-  //Type is it's own value
-  template<typename F, typename S>
-  typename state_bind<F, S>::value_type state_bind<F, S>::value;
-
   template <typename F>
   class Fsm 
   {
+    /* Alias on F for clearer understanding in code.
+     * */
     using state_ptr = F *;
 
     public:
+
+    /* Start function, should only be called once when starting the machine.
+     * */
     static void start(void)
     {
       entry_state();
     }
 
+    /* Transition function. Will exit current state, update internal ptr to the
+     * new state and then entry the new state.
+     * */
     template <typename S>
     static void transit(void)
     {
       exit_state();
-      //Update current state and then call entry
       state_current_ = get_state_ptr<S>();
       dispatch_transit(TransitMessage(state_current_string_, typeid(S).name()));
       state_current_string_ = typeid(S).name();
       entry_state();
     }
 
+    /* Transition function when a function is provided and it returns a boolean.
+     * It will check for the return value of the said function and will proceed
+     * with the transition or not.
+     * */
     template <typename S, typename func>
     static typename std::enable_if<
       std::is_convertible<func, bool(*)()>::value, void>::type
     transit(func callee)
     {
-      //Call checker function and proceed if true
       bool call_result = callee();
       dispatch_check(CheckMessage(state_current_string_,
             typeid(S).name(), call_result));
@@ -144,16 +160,20 @@ namespace cppfsm
       }
     }
 
+    /* Transition function when a function is provided and it returns anything
+     * but a boolean. It will call the function and then proceed to transition.
+     * */
     template <typename S, typename func>
     static typename std::enable_if<
       !std::is_convertible<func, bool(*)()>::value, void>::type
     transit(func callee)
     {
-      //Call checker function and proceed if true
       callee();
       transit<S>();
     }
 
+    /* Return a pointer on a templated state
+     * */
     template <typename S>
     static constexpr state_ptr get_state_ptr(void)
     {
@@ -161,16 +181,18 @@ namespace cppfsm
       return &state_bind<F, S>::value;
     }
 
+    /* React to an event without any payload
+     * */
     static void event(void)
     {
-      //Dispatch event to current state
       state_current_->react();
     }
 
+    /* React to an event with a payload (can be anything)
+     * */
     template <typename P>
     static void event(const P& payload)
     {
-      //Dispatch event to current state with payload
       state_current_->react(payload);
     }
 
@@ -199,18 +221,35 @@ namespace cppfsm
     /* These attributes need to be public because of static as they
      * need to be initialized and are initialized outside of function.
      * */
+
+    /* Represent current state
+     * */
     static state_ptr state_current_;
+
+    /* Represent current state name (needed because it is then hidden)
+     * behind a pointer on Fsm */
     static std::string state_current_string_;
+
+    /* Represent strictness of the machine
+     * */
     static strictness strict_;
+
+    /* Represent all listeners currently registered in the machine 
+     * */
     static std::vector<std::shared_ptr<Listener>> listeners_;
 
     private:
+    
+    /* Call entry on current state and dispatch message
+     * */
     static void entry_state(void)
     {
       state_current_->entry();
       dispatch_entry(Message(state_current_string_));
     }
 
+    /* Call exit on current state and dispatch message
+     * */
     static void exit_state(void)
     {
       state_current_->exit();
@@ -270,17 +309,6 @@ namespace cppfsm
   /* These macro are helpers to initiate machine in a state with a given
    * strictness parameter
    * */
-#define CPPFSM_INIT_STATE(_MACHINE, _STATE) \
-  CPPFSM_SET_LISTENERS(_MACHINE); \
-  CPPFSM_SET_STATE(_MACHINE, _STATE) \
-
-#define CPPFSM_INIT(_MACHINE, _STATE, _STRICTNESS) \
-  CPPFSM_SET_LISTENERS(_MACHINE); \
-  CPPFSM_SET_STATE(_MACHINE, _STATE); \
-  template <> \
-  cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
-  cppfsm::strictness::_STRICTNESS \
-
 #define CPPFSM_SET_STATE(_MACHINE, _STATE) \
   template <> \
   cppfsm::Fsm<_MACHINE>::state_ptr cppfsm::Fsm<_MACHINE>::state_current_ = \
@@ -293,5 +321,16 @@ namespace cppfsm
   template <> \
   std::vector<std::shared_ptr<cppfsm::Listener>> cppfsm::Fsm<_MACHINE>::listeners_\
   = std::vector<std::shared_ptr<cppfsm::Listener>>() \
+
+#define CPPFSM_INIT_STATE(_MACHINE, _STATE) \
+  CPPFSM_SET_LISTENERS(_MACHINE); \
+  CPPFSM_SET_STATE(_MACHINE, _STATE) \
+
+#define CPPFSM_INIT(_MACHINE, _STATE, _STRICTNESS) \
+  CPPFSM_SET_LISTENERS(_MACHINE); \
+  CPPFSM_SET_STATE(_MACHINE, _STATE); \
+  template <> \
+  cppfsm::strictness cppfsm::Fsm<_MACHINE>::strict_ = \
+  cppfsm::strictness::_STRICTNESS \
 
 } //namespace cppfsm

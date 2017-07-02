@@ -1,3 +1,8 @@
+# Improvements
+* Improve start function to check that it is called only once
+* Improve message dispatching to have only one function correctly
+  dispatching on the listeners (avoid 4 loops).
+
 # Transition
 * Add transitions function call (DONE)
     - Check return value when bool is return type
