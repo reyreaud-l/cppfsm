@@ -11,19 +11,9 @@ addons:
     packages:
       - gcc-6
       - g++-6
-      - clang
-      - clang++
+      - clang-5.0
       - cmake
 script:
-  - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
-  - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++
-  - export CC=/usr/bin/gcc-6
-  - export CXX=/usr/bin/g++-6
   - gcc -v && g++ -v && clang -v &7 clang++ -v && cmake --version
-  - mkdir build
-  - cd build && cmake .. && make check
-  - rm -rf build/
-  - export CC=/usr/bin/clang
-  - export CXX=/usr/bin/clang++
   - mkdir build
   - cd build && cmake .. && make check
