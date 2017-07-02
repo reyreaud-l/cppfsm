@@ -16,6 +16,5 @@ addons:
       - clang
       - cmake
 script:
-  - gcc -v && g++ -v && clang -v &7 clang++ -v && cmake --version
   - mkdir build
   - cd build && cmake .. && make check
