@@ -36,7 +36,9 @@ namespace cppfsm
     void on_entry(const Message& m) override
     {
       if (!out_file.is_open()) return;
-      out_file << " \"" << m.state_name_get() << "\" [label=\"" << m.state_name_get() << "\"]\n";
+      out_file << " \"" << m.state_name_get()
+        << "\" [label=\"" << m.state_name_get()
+        << "\"]\n";
     }
 
     void on_exit(const Message& m) override

@@ -11,7 +11,7 @@ addons:
     packages:
       - gcc-6
       - g++-6
-      - clang-5.0
+      - clang
       - cmake
 script:
   - gcc -v && g++ -v && clang -v &7 clang++ -v && cmake --version
