@@ -29,3 +29,15 @@
 *.app
 
 build/
+.deps/
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.log
+config.status
+configure
+cppfsm_test
+depcomp
+install-sh
+missing
