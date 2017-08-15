@@ -1,0 +1,13 @@
+AC_PREREQ([2.64])
+
+AC_INIT([cppfsm_test], [1.0])
+
+
+AM_INIT_AUTOMAKE()
+AM_SILENT_RULES([yes])
+
+AC_LANG([C++])
+AC_PROG_CXX
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
