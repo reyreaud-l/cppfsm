@@ -18,3 +18,4 @@ script:
   - ./autogen.sh
   - ./configure
   - make
+  - ./cppfsm_test
