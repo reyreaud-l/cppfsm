@@ -1,7 +1,7 @@
 AC_PREREQ([2.64])
 
 AC_INIT([cppfsm_test], [1.0])
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 AM_SILENT_RULES([yes])
 
 AC_LANG([C++])
