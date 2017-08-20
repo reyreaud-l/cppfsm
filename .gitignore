@@ -41,3 +41,4 @@ cppfsm_test
 depcomp
 install-sh
 missing
+flowgraph.gv
