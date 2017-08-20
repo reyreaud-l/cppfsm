@@ -14,8 +14,6 @@ addons:
       - gcc-4.8
       - g++-4.8
       - clang
-      - autoreconf
-      - automake
 script:
   - ./autogen.sh
   - ./configure
